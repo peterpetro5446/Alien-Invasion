@@ -7,50 +7,48 @@ You find yourself in the middle of an unexpected alien encounter. The success of
 If you manage to communicate with them using a universal translator successfully, and you offer them a unique Earth souvenir, the encounter is considered friendly. 
 However, if the universal translator malfunctions or if you fail to provide a suitable souvenir, the encounter turns hostile.
 Additionally, if you attempt to run away or attack the aliens, it also results in a hostile outcome.
-
-*/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>  
 #include <unistd.h>
+#include <ctype.h>
  
 bool checkMalfunction();
 bool offerSouvenir();
 bool getYesNo();
 void turnedHostile();
 void turnedFriendly();
- 
-int main(void) {
 
+int main(void) {
+ 
     printf("You find yourself in the middle of an unexpected alien encounter\n");
     printf("The extraterrestrial beings would like to communicate with you.\n\n");
-    printf("⌿⌰⟒⏃⎅ ⍙⟟⏁⊑ ⏁⊑⟒ ⌰⏃⍙⊬⟒⍀ ⏁⍜ ⎅⍀⍜⌿ ⏁⊑⟒ ⌰⍜⌇⏁ ☊⏃⎍⌇⟒. ⏁⊑⟒ ⊬⍜⎍⋏☌ ☍⟟⎅ ⟊⎍⋔⌿⟒⎅ ⏁⊑⟒ ⍀⎍⌇⏁⊬ ☌⏃⏁⟒)\n\n");  // Alien-like text
+    printf("⌿⌰⟒⏃⎅ ⍙⟟⏁⊑ ⏁⊑⟒ ⌰⏃⍙⊬⟒⍀ ⏁⍜ ⎅⍀⍜⌿ ⏁⊑⟒ ⌰⍜⌇⏁ ☊⏃⎍⌇⟒. ⏁⊑⟒ ⊬⍜⎍⋏☌ ☍⟟⎅ ⟊⎍⋔⌿⟒⎅ ⏁⊑⟒ ⍀⎍⌇⏁⊬ ☌⏃⏁⟒)\n\n");
     printf("What would you like to do ?\n");
  
-    int options;
-
-    printf("Choose an option.\n");                             // Option menu
+    int userChoice;
+    printf("Choose an option.\n");
     printf("\t1\t\tCommunicate\n");
     printf("\t2\t\tCommunicate with universal translator\n");
     printf("\t3\t\tRun away\n");
     printf("\t4\t\tAttack Aliens\n\n\n\n");
-    scanf("%d", &options);
-    switch (options) {
-    case 1:                                                    // Simple communication in your language.
+    scanf("%d", &userChoice);
+    switch (userChoice) {
+    case 1:     // Communication without translator.
         printf("The aliens were unable to understand you.\n");
         turnedHostile();
         break;
-    case 2:                                                    // Communication using a translator that can randomly malfunction.
-        if (checkMalfunction() == false)
+    case 2:     // Communication with translator.
+        if (!checkMalfunction())
         {
             printf("The transaltor works! The aliens are surprised they found life on another planet.\n");
             if(offerSouvenir()){
-                turnedFriendly();
+            turnedFriendly();
             }
             else{
-                turnedHostile();
+            turnedHostile();
             }
         }
         else {
@@ -58,11 +56,11 @@ int main(void) {
             turnedHostile();
         }
         break;
-    case 3:                                                    // Run away.
+    case 3:     // Try to run away.
         printf("Too slow.\n");
         turnedHostile();
         break;
-    case 4:                                                    // Attack the Alien.
+    case 4:     // Attack the Aliens.
         printf("You decided to choose the worst possible option.\n");
         turnedHostile();
         break;
@@ -80,37 +78,35 @@ void turnedFriendly(){
     getchar();
     exit(0);
 }
-bool getYesNo(){
+bool getUserInput(){
     printf("Please type in \'Y\' for \"Yes\" or \'N\' for \"NO\".\n");
-    char yesNo;
-    int i = 0;
-    while(1){
-        scanf(" %c", &yesNo);                     // Aliens are impatient.
-        if (i >= 3){
+    char userInput;
+    int userAttempts = 0;
+    while(userInput != 'Y' && userInput != 'N'){
+        scanf(" %c", &userInput);
+        userInput = toupper(userInput); 
+        if (userAttempts >= 3){
             turnedHostile();
         }
-        if (yesNo == 'Y' || yesNo == 'y' || yesNo == 'N' || yesNo == 'n') {
-            break;
-        }
         else {
-            i++;
+            userAttempts++;
         }
     }
-        if (yesNo == 'Y' || yesNo == 'y'){
-            return 1;}
+        if (userInput == 'Y'){
+            return true;}
             else{
-            return 0;
+            return false;
             }
        
     }
 bool offerSouvenir(){
     printf("Would you like to give the aliens an Earth souvenir ?\n");
-    return getYesNo();
+    return getUserInput();
 }
-bool checkMalfunction() {  // Randomized malfunction 
+bool checkMalfunction() {  
     srand((int)time(0));
     int tmp = (rand() % 10);
-    if (tmp > 7) {    // 20% chance to malfunction
+    if (tmp > 7) {
         return true;
     }
     else {
