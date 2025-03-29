@@ -41,7 +41,7 @@ Depending on your input and randomized translator reliability, you'll get differ
 
 ---
 
-## 🔧 Compile & Run
+## Compile & Run
 
 ### Compile with `gcc`:
 ```bash
